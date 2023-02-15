@@ -16,17 +16,17 @@ const char *VERTEX_SHADER =
     "uniform mat4 view;"
     "uniform mat4 projection;"
     "out vec3 normal;"
-    "out vec3 position;"
+    "out vec3 fragPosition;"
     "void main() {"
     "   gl_Position = projection * view * model * vec4(vertexPosition, 1.0);"
     "   normal = mat3(transpose(inverse(model))) * vertexNormal;"
-    "   position = vec3(model * vec4(vertexPosition, 1.0)); " 
+    "   fragPosition = vec3(model * vec4(vertexPosition, 1.0)); " 
     "}";
 
 const char *FRAGMENT_SHADER =
     "#version 330\n"
     "in vec3 normal;"
-    "in vec3 position;"
+    "in vec3 fragPosition;"
     "uniform vec3 lightPosition;"
     "out vec3 color;"
     "void main() {"
@@ -34,7 +34,7 @@ const char *FRAGMENT_SHADER =
     "   vec3 objectColor = vec3(1.0f, 0.1f, 0.1f);"
     "   vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);"
     ""
-    "   vec3 lightDirection = normalize(lightPosition - position);"
+    "   vec3 lightDirection = normalize(lightPosition - fragPosition);"
     "   float diffuseStrength = max(dot(normal, lightDirection), 0.0);"
     ""
     "   vec3 diffuse = diffuseStrength * lightColor;"
@@ -162,7 +162,7 @@ int main()
 
         glUseProgram(program);
 
-        glm::vec3 lightPosition = glm::vec3(0.0f, 5.0f, 0.0f);
+        glm::vec3 lightPosition = glm::vec3(0.0f, 3.5f, 5.0f);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
